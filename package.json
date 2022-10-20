@@ -41,7 +41,6 @@
     "@rollup/pluginutils": "^5.0.1"
   },
   "devDependencies": {
-    "@types/eslint": "^8.4.6",
     "@types/node": "^18.11.2",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
@@ -59,6 +58,7 @@
     "vite": "^3.1.8"
   },
   "peerDependencies": {
+    "@types/eslint": ">=7",
     "eslint": ">=7",
     "vite": ">=2"
   }
