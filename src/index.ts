@@ -1,107 +1,80 @@
-import type { Plugin } from 'vite'
-import { resolve } from 'node:path'
-import { createFilter } from '@rollup/pluginutils'
+import type { Plugin } from "vite"
+import { resolve } from "node:path"
+import { createFilter } from "@rollup/pluginutils"
 
-import type { Options, OutputFixes, ESLint } from './types'
-import { name } from '../package.json'
-import { checkModule, isVirtualModule, parseRequest, pickESLintOptions, to } from './utils'
+import type { Options, ESLint } from "./types"
+import { name } from "../package.json"
+import { checkModule, isVirtualModule, parseRequest, pickESLintOptions, to } from "./utils"
 
 export { Options }
 
 export default function eslintPlugin(rawOptions: Options = {}): Plugin {
   let eslint: ESLint
   let filter: ReturnType<typeof createFilter>
-  let formatter: ESLint.Formatter['format']
+  let formatter: ESLint.Formatter["format"]
   let options: Options
-  let outputFixes: OutputFixes
   // If cache is true, it will save all path.
   const fileCache = new Set<string>()
 
   return {
     name,
     async configResolved(config) {
-      options = Object.assign<Options, Options>(
-        {
-          lintOnStart: false,
-          include: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.vue', '**/*.svelte'],
-          exclude: ['**/node_modules/**'],
-          // Use vite cacheDir as default
-          cacheLocation: resolve(config.cacheDir, '.eslintcache'),
-          formatter: 'stylish',
-          emitWarning: true,
-          emitError: true,
-          failOnWarning: false,
-          failOnError: true,
-          errorOnUnmatchedPattern: false,
-        },
-        rawOptions
-      )
+      options = {
+        lintOnStart: false,
+        include: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.vue", "**/*.svelte"],
+        exclude: ["**/node_modules/**"],
+        // Use vite cacheDir as default
+        cacheLocation: resolve(config.cacheDir, ".eslintcache"),
+        formatter: "stylish",
+        errorOnUnmatchedPattern: false,
+        failOnWarning: false,
+        failOnError: true,
+        ...rawOptions,
+      }
     },
     async buildStart() {
-      const [error, module] = await to(import(options.eslintPath ?? 'eslint'))
+      const [error, module] = await to(import(options.eslintPath ?? "eslint"))
 
       if (error) {
-        this.error('Failed to import ESLint, do you install or configure eslintPath?')
-      } else {
-        const eslintOptions = pickESLintOptions(options)
+        this.error("Failed to import eslint")
+      }
 
-        eslint = new module.ESLint(eslintOptions)
-        outputFixes = module.ESLint.outputFixes
-        filter = createFilter(options.include, options.exclude)
+      eslint = new module.ESLint(pickESLintOptions(options))
 
-        switch (typeof options.formatter) {
-          case 'string':
-            formatter = (await eslint.loadFormatter(options.formatter)).format
-            break
-          case 'function':
-            formatter = options.formatter
-          default:
-            break
-        }
+      filter = createFilter(options.include, options.exclude)
 
-        if (options.lintOnStart && options.include) {
-          this.warn('LintOnStart is turned on, and it will check for all matching files.')
+      switch (typeof options.formatter) {
+        case "string":
+          formatter = (await eslint.loadFormatter(options.formatter)).format
+          break
+        case "function":
+          formatter = options.formatter
+          break
+        default:
+          break
+      }
 
-          const [error] = await to(
-            checkModule(this, eslint, options.include, options, formatter, outputFixes)
-          )
+      if (options.lintOnStart && options.include) {
+        this.warn("LintOnStart is turned on, and it will check for all matching files.")
 
-          if (error) {
-            this.error(error.message)
-          }
-        }
+        const [error] = await to(checkModule(this, eslint, options.include, options, formatter))
+        if (error) this.error(error.message)
       }
     },
     async transform(_, id) {
       const filePath = parseRequest(id)
       const isVirtual = isVirtualModule(filePath)
 
-      if (isVirtual && fileCache.has(filePath)) {
-        fileCache.delete(filePath)
-      }
+      if (isVirtual && fileCache.has(filePath)) fileCache.delete(filePath)
 
-      if (!filter(filePath) || (await eslint.isPathIgnored(filePath)) || isVirtual) {
-        return null
-      }
+      if (!filter(filePath) || (await eslint.isPathIgnored(filePath)) || isVirtual) return null
 
-      if (options.cache) {
-        fileCache.add(filePath)
-      }
+      if (options.cache) fileCache.add(filePath)
 
       const [error] = await to(
-        checkModule(
-          this,
-          eslint,
-          options.cache ? Array.from(fileCache) : filePath,
-          options,
-          formatter,
-          outputFixes
-        )
+        checkModule(this, eslint, options.cache ? Array.from(fileCache) : filePath, options, formatter),
       )
-
-      if (error) {
-        this.error(error.message)
-      }
+      if (error) this.error(error.message)
 
       return null
     },

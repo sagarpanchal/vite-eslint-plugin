@@ -1,10 +1,10 @@
-import type { PluginContext } from 'rollup'
-import { existsSync } from 'node:fs'
+import type { PluginContext } from "rollup"
+import { existsSync } from "node:fs"
 
-import type { Options, ESLint, OutputFixes } from './types'
+import type { Options, ESLint } from "./types"
 
 export function parseRequest(id: string) {
-  return id.split('?', 2)[0]
+  return id.split("?", 2)[0]
 }
 
 export function isVirtualModule(file: string) {
@@ -12,35 +12,12 @@ export function isVirtualModule(file: string) {
 }
 
 export function pickESLintOptions(options: Options): ESLint.Options {
-  const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    eslintPath,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    lintOnStart,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    include,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    exclude,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    formatter,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    emitWarning,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    emitError,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    failOnWarning,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    failOnError,
-    ...eslintOptions
-  } = options
-
+  const { eslintPath, lintOnStart, include, exclude, formatter, failOnError, failOnWarning, ...eslintOptions } = options
   return eslintOptions
 }
 
 export async function to<R, E = Error>(promise: Promise<R>) {
-  return promise
-    .then<[null, R]>((data) => [null, data])
-    .catch<[E, undefined]>((error: E) => [error, undefined])
+  return promise.then<[null, R]>((data) => [null, data]).catch<[E, undefined]>((error: E) => [error, undefined])
 }
 
 export async function checkModule(
@@ -48,49 +25,21 @@ export async function checkModule(
   eslint: ESLint,
   files: string | string[],
   options: Options,
-  formatter: ESLint.Formatter['format'],
-  outputFixes: OutputFixes
+  formatter: ESLint.Formatter["format"],
 ) {
   const [error, report] = await to(eslint.lintFiles(files))
+  if (error) return Promise.reject(error)
 
-  if (error) {
-    return Promise.reject(error)
-  }
-
-  const hasWarning = report.some((item) => item.warningCount > 0)
-  const hasError = report.some((item) => item.errorCount > 0)
-  const result = formatter(report)
-
-  // Auto fix error
-  if (options.fix && report) {
-    const [error] = await to(outputFixes(report))
-
-    if (error) {
-      return Promise.reject(error)
-    }
-  }
+  const message = await formatter(report)
+  if (report?.length) console.log(message)
 
   // Throw warning message
-  if (hasWarning && options.emitWarning) {
-    const warning = typeof result === 'string' ? result : await result
-
-    if (options.failOnWarning) {
-      ctx.error(warning)
-    } else {
-      ctx.warn(warning)
-    }
-  }
+  const hasWarning = report.some((item) => item.warningCount > 0)
+  if (hasWarning && options.failOnWarning) ctx.error(message)
 
   // Throw error message
-  if (hasError && options.emitError) {
-    const error = typeof result === 'string' ? result : await result
-
-    if (options.failOnError) {
-      ctx.error(error)
-    } else {
-      console.log(error)
-    }
-  }
+  const hasError = report.some((item) => item.errorCount > 0)
+  if (hasError && options.failOnError) ctx.error(message)
 
   return Promise.resolve()
 }

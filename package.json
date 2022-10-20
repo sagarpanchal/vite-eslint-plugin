@@ -1,8 +1,8 @@
 {
-  "name": "vite-plugin-eslint",
-  "version": "1.8.1",
+  "name": "vite-eslint",
+  "version": "1.8.2",
   "description": "ESLint plugin for vite.",
-  "author": "Xiang Gao",
+  "author": "Sagar Panchal",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -27,8 +27,8 @@
     "eslint",
     "vite-plugin"
   ],
-  "homepage": "https://github.com/gxmari007/vite-plugin-eslint",
-  "repository": "git+https://github.com:gxmari007/vite-plugin-eslint.git",
+  "homepage": "https://github.com/sagarpanchal/vite-eslint",
+  "repository": "git+https://github.com:sagarpanchal/vite-eslint.git",
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
@@ -47,9 +47,12 @@
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-config-recommended": "^4.1.0",
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "eslint": "^8.25.0",
     "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
     "tsup": "^6.2.1",

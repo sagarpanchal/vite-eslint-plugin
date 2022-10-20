@@ -1,72 +1,58 @@
-# vite-plugin-eslint
+# vite-eslint
 
-[![npm](https://img.shields.io/npm/v/vite-plugin-eslint)](https://www.npmjs.com/package/vite-plugin-eslint)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-plugin-eslint/peer/vite)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-plugin-eslint/peer/eslint)
-[![GitHub license](https://img.shields.io/github/license/gxmari007/vite-plugin-eslint)](https://github.com/gxmari007/vite-plugin-eslint/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/v/vite-eslint)](https://www.npmjs.com/package/vite-eslint)
+![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint/peer/vite)
+![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint/peer/eslint)
+[![GitHub license](https://img.shields.io/github/license/sagarpanchal/vite-eslint)](https://github.com/sagarpanchal/vite-eslint/blob/master/LICENSE)
 
-ESLint plugin for vite.
+Better ESLint plugin for vite.
+Forked From [vite-plugin-eslint](https://github.com/gxmari007/vite-plugin-eslint)
 
 ## Install
 
 ```bash
-npm install eslint vite-plugin-eslint --save-dev
+npm install eslint vite-eslint --save-dev
 # or
-yarn add eslint vite-plugin-eslint -D
+yarn add eslint vite-eslint -D
 ```
 
 ## Usage
 
 ```js
-import { defineConfig } from 'vite'
-import eslint from 'vite-plugin-eslint'
+import { defineConfig } from "vite"
+import eslint from "vite-eslint"
 
 export default defineConfig({
-  plugins: [eslint()]
+  plugins: [eslint()],
 })
 ```
 
-If you do not want the plugin to break dev, you can configure the plugin this way: 
+If you do not want the plugin to break dev, you can configure the plugin this way:
+
 ```js
-import { defineConfig } from 'vite';
-import eslint from 'vite-plugin-eslint';
+import { defineConfig } from "vite"
+import eslint from "vite-eslint"
 
 export default defineConfig({
   plugins: [
-    { // default settings on build (i.e. fail on error)
+    {
+      // default settings on build (i.e. fail on error)
       ...eslint(),
-      apply: 'build',
+      apply: "build",
     },
-    { // do not fail on serve (i.e. local development)
-      ...eslint({
-        failOnWarning: false,
-        failOnError: false,
-      }),
-      apply: 'serve',
-      enforce: 'post'
-    }
+    {
+      // do not fail on serve (i.e. local development)
+      ...eslint({ failOnWarning: false, failOnError: false }),
+      apply: "serve",
+      enforce: "post",
+    },
   ],
-});
-
+})
 ```
 
 ## Options
 
 You can pass [eslint options](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions).
-
-### `cache`
-
-- Type: `boolean`
-- Default: `false`
-
-Decrease execution time, `Beta` Cache now correctly recognizes file changes, you can try it out.
-
-### `fix`
-
-- Type: `boolean`
-- Default: `false`
-
-Auto fix source code.
 
 ### `eslintPath`
 
@@ -102,20 +88,6 @@ A single file, or array of files, to exclude when linting.
 - Default: `stylish`
 
 Custom error formatter or the name of a built-in formatter.
-
-### `emitWarning`
-
-- Type: `boolean`
-- Default: `true`
-
-The warings found will be printed.
-
-### `emitError`
-
-- Type: `boolean`
-- Default: `true`
-
-The errors found will be printed.
 
 ### `failOnWarning`
 

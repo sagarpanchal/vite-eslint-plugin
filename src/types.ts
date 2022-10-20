@@ -1,4 +1,4 @@
-import { ESLint } from 'eslint'
+import { ESLint } from "eslint"
 
 export { ESLint }
 export type OutputFixes = typeof ESLint.outputFixes
@@ -14,11 +14,7 @@ export interface Options extends ESLint.Options {
   /** A single file, or array of files, to exclude when linting */
   exclude?: string | string[]
   /** Custom error formatter or the name of a built-in formatter */
-  formatter?: string | ESLint.Formatter['format']
-  /** The warings found will be printed */
-  emitWarning?: boolean
-  /** The errors found will be printed */
-  emitError?: boolean
+  formatter?: string | ESLint.Formatter["format"]
   /** Will cause the module build to fail if there are any warnings, based on emitWarning */
   failOnWarning?: boolean
   /** Will cause the module build to fail if there are any errors, based on emitError */
