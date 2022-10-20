@@ -1,9 +1,9 @@
-# vite-eslint
+# vite-eslint-plugin
 
-[![npm](https://img.shields.io/npm/v/vite-eslint)](https://www.npmjs.com/package/vite-eslint)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint/peer/vite)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint/peer/eslint)
-[![GitHub license](https://img.shields.io/github/license/sagarpanchal/vite-eslint)](https://github.com/sagarpanchal/vite-eslint/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/v/vite-eslint-plugin)](https://www.npmjs.com/package/vite-eslint-plugin)
+![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint-plugin/peer/vite)
+![npm peer dependency version](https://img.shields.io/npm/dependency-version/vite-eslint-plugin/peer/eslint)
+[![GitHub license](https://img.shields.io/github/license/sagarpanchal/vite-eslint-plugin)](https://github.com/sagarpanchal/vite-eslint-plugin/blob/master/LICENSE)
 
 Better ESLint plugin for vite.
 Forked From [vite-plugin-eslint](https://github.com/gxmari007/vite-plugin-eslint)
@@ -11,16 +11,16 @@ Forked From [vite-plugin-eslint](https://github.com/gxmari007/vite-plugin-eslint
 ## Install
 
 ```bash
-npm install eslint vite-eslint --save-dev
+npm install eslint vite-eslint-plugin --save-dev
 # or
-yarn add eslint vite-eslint -D
+yarn add eslint vite-eslint-plugin -D
 ```
 
 ## Usage
 
 ```js
 import { defineConfig } from "vite"
-import eslint from "vite-eslint"
+import eslint from "vite-eslint-plugin"
 
 export default defineConfig({
   plugins: [eslint()],
@@ -31,7 +31,7 @@ If you do not want the plugin to break dev, you can configure the plugin this wa
 
 ```js
 import { defineConfig } from "vite"
-import eslint from "vite-eslint"
+import eslint from "vite-eslint-plugin"
 
 export default defineConfig({
   plugins: [

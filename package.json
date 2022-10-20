@@ -1,5 +1,5 @@
 {
-  "name": "vite-eslint",
+  "name": "vite-eslint-plugin",
   "version": "1.8.2",
   "description": "ESLint plugin for vite.",
   "author": "Sagar Panchal",
@@ -27,8 +27,8 @@
     "eslint",
     "vite-plugin"
   ],
-  "homepage": "https://github.com/sagarpanchal/vite-eslint",
-  "repository": "git+https://github.com:sagarpanchal/vite-eslint.git",
+  "homepage": "https://github.com/sagarpanchal/vite-eslint-plugin",
+  "repository": "git+https://github.com:sagarpanchal/vite-eslint-plugin.git",
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
