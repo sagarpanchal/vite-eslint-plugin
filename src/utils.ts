@@ -1,7 +1,7 @@
 import type { PluginContext } from "rollup"
 import { existsSync } from "node:fs"
 
-import type { Options, ESLint } from "./types"
+import type { Options, ESLint, OutputFixes } from "./types"
 
 export function parseRequest(id: string) {
   return id.split("?", 2)[0]
@@ -26,20 +26,63 @@ export async function checkModule(
   files: string | string[],
   options: Options,
   formatter: ESLint.Formatter["format"],
+  outputFixes: OutputFixes,
 ) {
-  const [error, report] = await to(eslint.lintFiles(files))
+  const [error, lintResult] = await to(eslint.lintFiles(files))
   if (error) return Promise.reject(error)
 
-  const message = await formatter(report)
-  if (report?.length) console.log(message)
+  // Auto fix error
+  if (options.fix && lintResult) {
+    const [error] = await to(outputFixes(lintResult))
+    if (error) return Promise.reject(error)
+  }
+
+  const hasWarnings = lintResult.some((item) => item.warningCount > 0)
+  const hasErrors = lintResult.some((item) => item.errorCount > 0)
+  const stdout = await formatter(lintResult)
+
+  // Print formatted lint result
+  if (stdout?.length) {
+    console.log("")
+    ctx.warn("📃 ESLint problems")
+    console.log(stdout)
+  }
 
   // Throw warning message
-  const hasWarning = report.some((item) => item.warningCount > 0)
-  if (hasWarning && options.failOnWarning) ctx.error(message)
+  if (hasWarnings && options.failOnWarning) {
+    return ctx.error("🚨 Check console for ESLint warning(s) 👆")
+  }
 
-  // Throw error message
-  const hasError = report.some((item) => item.errorCount > 0)
-  if (hasError && options.failOnError) ctx.error(message)
+  // // Throw error message
+  if (hasErrors && options.failOnError) {
+    return ctx.error("🚨 Check console for ESLint error(s) 👆")
+  }
+
+  // if (hasWarning && options.failOnWarning) {
+  //   const warnings = await (async () => {
+  //     const warningReport = lintResult.map((item) => ({
+  //       ...item,
+  //       messages: item.messages.filter((message) => message.severity === 1),
+  //     }))
+  //     return formatter(warningReport)
+  //   })()
+
+  //   console.log("")
+  //   ctx.error(warnings)
+  // }
+
+  // if (hasError && options.failOnError) {
+  //   const errors = await (async () => {
+  //     const errorReport = lintResult.map((item) => ({
+  //       ...item,
+  //       messages: item.messages.filter((message) => message.severity === 2),
+  //     }))
+  //     return formatter(errorReport)
+  //   })()
+
+  //   console.log("")
+  //   ctx.error(errors)
+  // }
 
   return Promise.resolve()
 }
