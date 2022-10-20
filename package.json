@@ -38,14 +38,13 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@rollup/pluginutils": "^4.2.1",
-    "@types/eslint": "^8.4.5",
-    "rollup": "^2.77.2"
+    "@rollup/pluginutils": "^5.0.1"
   },
   "devDependencies": {
-    "@types/node": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
-    "@typescript-eslint/parser": "^5.30.7",
+    "@types/eslint": "^8.4.6",
+    "@types/node": "^18.11.2",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-recommended": "^4.1.0",
@@ -55,9 +54,9 @@
     "eslint": "^8.25.0",
     "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
-    "tsup": "^6.2.1",
-    "typescript": "^4.7.4",
-    "vite": "^3.0.8"
+    "tsup": "^6.3.0",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.8"
   },
   "peerDependencies": {
     "eslint": ">=7",
